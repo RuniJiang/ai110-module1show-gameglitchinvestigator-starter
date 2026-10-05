@@ -35,11 +35,12 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ---
 
 ## 3. Debugging and testing your fixes
-
 - How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
+  - For the hint bug, I used the reproduction from my bug log (secret 40, guess 60) and checked that the result was "Too High" with a "Go LOWER!" hint, and that a guess below the secret gave "Go HIGHER!". I treated it as fixed only when a test for that exact case passed, so the bug can't quietly come back. For the Enter key, the check is manual: type a number, press Enter without clicking Submit, and confirm an attempt is counted.
+- Describe at least one test you ran (manual or using pytest) and what it showed you about your code.
+  - `python -m pytest -q` runs 6 tests in `tests/test_game_logic.py`, and all 6 passed. The most useful one is `test_check_guess_compares_numerically_not_as_strings`. It showed that `check_guess` must compare ints as ints: `check_guess(9, 50)` has to be "Too Low" and `check_guess(100, 99)` has to be "Too High". Compared as strings, "9" > "50", so the old code could give the wrong hint. That bug came from `app.py` passing the secret as a `str` on even-numbered attempts, which is a second glitch the hint fix alone wouldn't have caught.
 - Did AI help you design or understand any tests? How?
+  - Claude suggested testing the hint message text instead of only the outcome label, and suggested the string-vs-int regression test after it noticed the `str(secret)` conversion in `app.py`. I read each test and checked that it fails against the old behavior and passes against the new one.
 
 ---
 
