@@ -24,22 +24,29 @@ It wrote the code, ran away, and now the game is unplayable.
    - Keep fixing until all tests pass!
 
 ## 📝 Document Your Experience
-
 - [ ] Describe the game's purpose.
+  - A Streamlit number guessing game. You guess a secret number and get higher/lower hints. Score and attempts depend on the difficulty.
 - [ ] Detail which bugs you found.
+  - The hints were backwards. "Too High" said "Go HIGHER!".
+  - On even attempts the secret was passed as a string, so "9" > "50" was true.
+- Pressing Enter did not submit a guess.
 - [ ] Explain what fixes you applied.
+  - Swapped the hint messages so "Too High" says "Go LOWER!".
+  - Removed the string fallback so guesses are always compared as ints.
+  - Added an `on_change` callback so Enter submits and the three-column layout stays.
+  - Moved the game logic into `logic_utils.py`.
+  - Updated the tests and added regression tests for hint direction and number comparison.
 
 ## 📸 Demo Walkthrough
 
-Describe your fixed game in numbered steps so a reader can follow along without watching a video:
+A sample game on **Normal** difficulty (range 1–100, 8 attempts) where the secret number is 55:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+1. The game starts with a score of 0. The player types `40` and presses Enter (or clicks Submit).
+2. The game returns "📈 Go HIGHER!" (Too Low), and the score drops to -5.
+3. The player guesses `70`. The game shows "📉 Go LOWER!" (Too High), and the score goes to 0 (a Too High guess on an even-numbered attempt adds 5).
+4. The player guesses `55`. The game shows "🎉 Correct!" and balloons appear.
+5. The score updates for the win: 100 - 10 × (3 + 1) = 60 points are added, so the final score is 60.
+6. The game ends after the correct guess. Further guesses are blocked with "You already won. Start a new game to play again." until the player clicks New Game.
 
 ## 🧪 Test Results
 
